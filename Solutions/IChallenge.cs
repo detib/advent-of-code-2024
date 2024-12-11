@@ -4,7 +4,7 @@ internal interface IChallenge
 {
     DateTime Day { get; }
     bool IsActive { get; }
-    string? Name => null;
+    string Name { get; }
     Task ExecuteAsync();
 }
 
