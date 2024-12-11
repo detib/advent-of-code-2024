@@ -1,6 +1,6 @@
-﻿using Solutions;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
+using Solutions;
 
 var assembly = Assembly.GetExecutingAssembly();
 
@@ -10,16 +10,23 @@ List<IChallenge> challenges = assembly.GetTypes()
 
 if (challenges.All(x => !x.IsActive))
 {
+    int maxNameLength = challenges.Max(x => x.Name.Length);
+    int maxPart1Length = challenges.OfType<IPart1Challenge>().Max(x => x.Part1Result.ToString().Length);
+    int maxPart2Length = challenges.OfType<IPart2Challenge>().Max(x => x.Part2Result.ToString().Length);
+
     Console.WriteLine(string.Join("\n", challenges.Select(x =>
     {
         var result = x switch
         {
-            IPart1Challenge part1 and IPart2Challenge part2 => $"Part1: {part1.Part1Result}, Part2: {part2.Part2Result}",
-            IPart1Challenge part1Only => $"Part1: {part1Only.Part1Result}",
-            IPart2Challenge part2Only => $"Part2: {part2Only.Part2Result}",
+            IPart1Challenge part1 and IPart2Challenge part2 =>
+                $"Part1: {part1.Part1Result.PadRight(maxPart1Length)} Part2: {part2.Part2Result.PadRight(maxPart2Length)}",
+            IPart1Challenge part1Only =>
+                $"Part1: {part1Only.Part1Result.PadRight(maxPart1Length)}",
+            IPart2Challenge part2Only =>
+                $"Part2: {part2Only.Part2Result.PadRight(maxPart2Length)}",
             _ => "Unknown Challenge Type"
         };
-        return $"{x.Day.Day} - {x.Name} : {result}";
+        return $"{x.Day.Day.ToString(), 2} - {x.Name.PadRight(maxNameLength)} : {result}";
     })));
 }
 
