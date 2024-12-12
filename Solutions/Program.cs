@@ -32,7 +32,15 @@ if (challenges.All(x => !x.IsActive))
 
 foreach (var challenge in challenges.Where(challenge => challenge.IsActive))
 {
-    Console.WriteLine($"Starting challenge: {challenge.Name ?? challenge.GetType().Name}");
+    var challengeType = challenge switch
+    {
+        IPart1Challenge and IPart2Challenge => "Part 1 and Part 2",
+        IPart1Challenge => "Part 1",
+        IPart2Challenge => "Part 2",
+        _ => "Unknown Type"
+    };
+
+    Console.WriteLine($"Starting challenge: {challenge.Name} ({challengeType})");
 
     var stopwatch = Stopwatch.StartNew();
     await challenge.ExecuteAsync();
@@ -44,5 +52,5 @@ foreach (var challenge in challenges.Where(challenge => challenge.IsActive))
                        $"{(elapsedTime.Seconds > 0 ? $"{elapsedTime.Seconds}s " : "")}" +
                        $"{(elapsedTime.Milliseconds > 0 ? $"{elapsedTime.Milliseconds}ms" : "")}";
 
-    Console.WriteLine($"Finished challenge: {challenge.Name ?? challenge.GetType().Name} in {friendlyTime.Trim()}");
+    Console.WriteLine($"Finished challenge: {challenge.Name} ({challengeType}) in {friendlyTime.Trim()}");
 }
