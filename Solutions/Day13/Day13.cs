@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using static Solutions.Day13.Helper;
 
 namespace Solutions.Day13;
 
@@ -49,7 +50,7 @@ internal class Day13Part1 : IPart1Challenge
         long answer = 0;
         foreach (var clawMachine in clawMachines)
         {
-            var (xMoves, yMoves) = GetMoves(clawMachine);
+            var (xMoves, yMoves) = clawMachine.GetMoves();
             var isX = xMoves * clawMachine.A.XMove + yMoves * clawMachine.B.XMove;
             var isY = xMoves * clawMachine.A.YMove + yMoves * clawMachine.B.YMove;
             if (isX == clawMachine.Prize.XPosition &&
@@ -59,32 +60,12 @@ internal class Day13Part1 : IPart1Challenge
 
         Console.WriteLine(answer);
     }
-
-    private static (long xMoves, long yMoves) GetMoves(ClawMachine clawMachine)
-    {
-        var d = clawMachine.A.XMove * clawMachine.B.YMove - clawMachine.A.YMove * clawMachine.B.XMove;
-
-        var dx = clawMachine.Prize.XPosition * clawMachine.B.YMove - clawMachine.Prize.YPosition * clawMachine.B.XMove;
-
-        var dy = clawMachine.A.XMove * clawMachine.Prize.YPosition - clawMachine.A.YMove * clawMachine.Prize.XPosition;
-
-        return (dx / d, dy / d);
-    }
-
-    private static (int X, int Y) GetPositionValue(string input)
-    {
-        var matchX = Regex.Match(input, "X[+=](\\d+)");
-        var matchY = Regex.Match(input, "Y[+=](\\d+)");
-
-        return (int.Parse(matchX.Groups[1].Value), int.Parse(matchY.Groups[1].Value));
-    }
 }
-
 
 internal class Day13Part2 : IPart2Challenge
 {
     public DateTime Day => new(2024, 12, 13);
-    public bool IsActive => true;
+    public bool IsActive => false;
     public string Name => "Claw Contraption";
     public string Part2Result => "92871736253789";
 
@@ -129,7 +110,7 @@ internal class Day13Part2 : IPart2Challenge
         long answer = 0;
         foreach (var clawMachine in clawMachines)
         {
-            var (xMoves, yMoves) = GetMoves(clawMachine);
+            var (xMoves, yMoves) = clawMachine.GetMoves();
             var isX = xMoves * clawMachine.A.XMove + yMoves * clawMachine.B.XMove;
             var isY = xMoves * clawMachine.A.YMove + yMoves * clawMachine.B.YMove;
             if (isX == clawMachine.Prize.XPosition &&
@@ -139,19 +120,11 @@ internal class Day13Part2 : IPart2Challenge
 
         Console.WriteLine(answer);
     }
+}
 
-    private static (long xMoves, long yMoves) GetMoves(ClawMachine clawMachine)
-    {
-        var d = clawMachine.A.XMove * clawMachine.B.YMove - clawMachine.A.YMove * clawMachine.B.XMove;
-
-        var dx = clawMachine.Prize.XPosition * clawMachine.B.YMove - clawMachine.Prize.YPosition * clawMachine.B.XMove;
-
-        var dy = clawMachine.A.XMove * clawMachine.Prize.YPosition - clawMachine.A.YMove * clawMachine.Prize.XPosition;
-
-        return (dx / d, dy / d);
-    }
-
-    private static (long X, long Y) GetPositionValue(string input)
+internal static class Helper
+{
+    internal static (long X, long Y) GetPositionValue(string input)
     {
         var matchX = Regex.Match(input, "X[+=](\\d+)");
         var matchY = Regex.Match(input, "Y[+=](\\d+)");
@@ -159,7 +132,6 @@ internal class Day13Part2 : IPart2Challenge
         return (long.Parse(matchX.Groups[1].Value), long.Parse(matchY.Groups[1].Value));
     }
 }
-
 
 internal record Button
 {
@@ -178,4 +150,15 @@ internal record ClawMachine
     public required Button A { get; set; }
     public required Button B { get; set; }
     public required Prize Prize { get; set; }
+
+    public (long xMoves, long yMoves) GetMoves()
+    {
+        var d = A.XMove * B.YMove - A.YMove * B.XMove;
+
+        var dx = Prize.XPosition * B.YMove - Prize.YPosition * B.XMove;
+
+        var dy = A.XMove * Prize.YPosition - A.YMove * Prize.XPosition;
+
+        return (dx / d, dy / d);
+    }
 }
