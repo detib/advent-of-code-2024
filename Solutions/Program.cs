@@ -10,24 +10,20 @@ List<IChallenge> challenges = assembly.GetTypes()
 
 if (challenges.All(x => !x.IsActive))
 {
-    int maxNameLength = challenges.Max(x => x.Name.Length);
-    int maxPart1Length = challenges.OfType<IPart1Challenge>().Max(x => x.Part1Result.ToString().Length);
-    int maxPart2Length = challenges.OfType<IPart2Challenge>().Max(x => x.Part2Result.ToString().Length);
+    var maxNameLength = challenges.Max(x => x.Name.Length);
+    var maxPart1Length = challenges.OfType<IPart1Challenge>().Max(x => x.Part1Result.ToString().Length);
+    var maxPart2Length = challenges.OfType<IPart2Challenge>().Max(x => x.Part2Result.ToString().Length);
 
-    Console.WriteLine(string.Join("\n", challenges.Select(x =>
+    foreach (var group in challenges.GroupBy(x => x.Name))
     {
-        var result = x switch
-        {
-            IPart1Challenge part1 and IPart2Challenge part2 =>
-                $"Part1: {part1.Part1Result.PadRight(maxPart1Length)} Part2: {part2.Part2Result.PadRight(maxPart2Length)}",
-            IPart1Challenge part1Only =>
-                $"Part1: {part1Only.Part1Result.PadRight(maxPart1Length)}",
-            IPart2Challenge part2Only =>
-                $"Part2: {part2Only.Part2Result.PadRight(maxPart2Length)}",
-            _ => "Unknown Challenge Type"
-        };
-        return $"{x.Day.Day.ToString(), 2} - {x.Name.PadRight(maxNameLength)} : {result}";
-    })));
+        var part1Challenge = group.OfType<IPart1Challenge>().FirstOrDefault();
+        var part2Challenge = group.OfType<IPart2Challenge>().FirstOrDefault();
+
+        var result = $"Part 1: {(part1Challenge?.Part1Result ?? "???").PadRight(maxPart1Length)} Part 2: {(part2Challenge?.Part2Result ?? "???").PadRight(maxPart2Length)}";
+
+        Console.WriteLine($"{part1Challenge?.Day.Day.ToString() ?? part2Challenge?.Day.Day.ToString() ?? "???",2} - " +
+                          $"{(part1Challenge?.Name ?? part2Challenge?.Name ?? "???").PadRight(maxNameLength)} : {result}");
+    }
 }
 
 foreach (var challenge in challenges.Where(challenge => challenge.IsActive))
