@@ -20,29 +20,28 @@ internal class Day15Part1 : IPart1Challenge
         var map = input.Split("\r\n\r\n")[0].Split("\r\n").Select(x => x.ToCharArray()).ToArray();
         var moves = input.Split("\r\n\r\n")[1].Replace("\r\n", string.Empty);
 
-
-        for (var i = 0; i < moves.Length; i++)
+        var allFrames = new List<char[][]>();
+        foreach (var nextMove in moves)
         {
+            allFrames.Add(map.Select(x => x.ToArray()).ToArray());
             var robotPosition = GetRobotPosition(map);
-            var nextMove = moves[i];
-
             var direction = Directions[nextMove];
 
-            var outputBuffer = new StringBuilder();
+            //var outputBuffer = new StringBuilder();
 
-            foreach (var row in map)
-            {
-                foreach (var cell in row)
-                {
-                    outputBuffer.Append(cell);
-                }
-                outputBuffer.AppendLine();
-            }
+            //foreach (var row in map)
+            //{
+            //    foreach (var cell in row)
+            //    {
+            //        outputBuffer.Append(cell);
+            //    }
+            //    outputBuffer.AppendLine();
+            //}
 
-            Console.Clear();
-            Console.Write(outputBuffer.ToString());
-
+            //Console.Clear();
+            //Console.Write(outputBuffer.ToString());
             //Thread.Sleep(20);
+
 
             var nextTile = map[robotPosition.i + direction.i][robotPosition.j + direction.j];
 
@@ -76,6 +75,8 @@ internal class Day15Part1 : IPart1Challenge
             }
         }
 
+        allFrames.Add(map);
+
         var boxCoordinates = new List<(int i, int j)>();
         for (var i = 0; i < map.Length; i++)
         {
@@ -93,6 +94,8 @@ internal class Day15Part1 : IPart1Challenge
         var answer = boxCoordinates.Sum(x => x.i * 100 + x.j);
 
         Console.WriteLine(answer);
+
+        CreateVideo(RemoveDuplicateFrames(allFrames), "frames1", "video2");
     }
 }
 
@@ -275,7 +278,7 @@ internal class Day15Part2 : IPart2Challenge
 
         allFrames.Add(map);
         // 1.16 gb frames, 7mb video
-        await CreateVideo(RemoveDuplicateFrames(allFrames));
+        CreateVideo(RemoveDuplicateFrames(allFrames));
     }
 }
 
@@ -336,16 +339,19 @@ internal static class Helper
         return true;
     }
 
-    internal static async Task CreateVideo(List<char[][]> frames)
+    internal static void CreateVideo(List<char[][]> frames, string? folderName = "frames", string? videoName = "video")
     {
-        var frameDir = $@"{AppContext.BaseDirectory}..\..\..\Day15\frames\";
-        var outputVideoDir = $@"{AppContext.BaseDirectory}..\..\..\Day15\video.mp4";
+        var frameDir = $@"{AppContext.BaseDirectory}..\..\..\Day15\{folderName}\";
 
         if (!Directory.Exists(frameDir))
             Directory.CreateDirectory(frameDir);
 
         if (Directory.GetFiles(frameDir).Length == 0)
         {
+            var totalFrames = frames.Count;
+            var lockObject = new object();
+            var processedFrames = 0;
+
             Parallel.ForEach(frames.Select((frame, index) => new { Frame = frame, Index = index }),
                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
                 frameInfo =>
@@ -354,16 +360,28 @@ internal static class Helper
                     using var bitmap = RenderFrameToImage(frameInfo.Frame);
                     var filePath = Path.Combine(frameDir, $"frame_{frameInfo.Index:D8}.png");
                     bitmap.Save(filePath, ImageFormat.Png);
+
+                    lock (lockObject)
+                        processedFrames++;
+                    
+                    Console.WriteLine($"Processed frame {processedFrames} of {totalFrames}");
+                    Console.Clear();
                 });
         }
 
+        Console.Clear();
+
+        var outputVideoDir = $@"{AppContext.BaseDirectory}..\..\..\Day15\{videoName}";
         CreateVideoFromImages(frameDir, outputVideoDir);
+        CreateVideoFromImages(frameDir, outputVideoDir, frameRate: 60);
+        CreateVideoFromImages(frameDir, outputVideoDir, frameRate: 120);
 
         Console.WriteLine("Video created");
     }
 
     private static void CreateVideoFromImages(string imagesFolderPath, string outputVideoPath, int frameRate = 30)
     {
+        outputVideoPath += $"-{frameRate}.mp4";
         if (!Directory.Exists(imagesFolderPath))
         {
             throw new DirectoryNotFoundException($"The folder '{imagesFolderPath}' does not exist.");
@@ -428,6 +446,7 @@ internal static class Helper
                     '.' => Brushes.LightGray,
                     '[' => Brushes.SandyBrown,
                     ']' => Brushes.SandyBrown,
+                    'O' => Brushes.SandyBrown,
                     '@' => Brushes.Firebrick,
                     _ => Brushes.Black
                 };
@@ -446,6 +465,11 @@ internal static class Helper
                     // Draw border on the left side
                     g.DrawLine(Pens.SandyBrown, x * cellSize, y * cellSize, x * cellSize, (y + 1) * cellSize);
                 }
+                else if (cell == 'O')
+                {
+                    g.FillRectangle(brush, x * cellSize, y * cellSize, cellSize, cellSize);
+                    g.DrawRectangle(Pens.SlateGray, x * cellSize, y * cellSize, cellSize, cellSize);
+                }
                 else
                 {
                     g.FillRectangle(brush, x * cellSize, y * cellSize, cellSize, cellSize);
@@ -455,5 +479,4 @@ internal static class Helper
 
         return bitmap;
     }
-
 }
