@@ -6,7 +6,7 @@ namespace Solutions.Day16;
 internal class Day16Part1 : IPart1Challenge
 {
     public DateTime Day => new(2024, 12, 16);
-    public bool IsActive => true;
+    public bool IsActive => false;
     public string Name => "Reindeer Maze";
     public string Part1Result => "98416";
     public async Task ExecuteAsync()
