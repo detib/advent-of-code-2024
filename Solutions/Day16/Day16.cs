@@ -1,11 +1,12 @@
-﻿using static Solutions.Day16.Helper;
+﻿using System.Text;
+using static Solutions.Day16.Helper;
 
 namespace Solutions.Day16;
 
 internal class Day16Part1 : IPart1Challenge
 {
     public DateTime Day => new(2024, 12, 16);
-    public bool IsActive => false;
+    public bool IsActive => true;
     public string Name => "Reindeer Maze";
     public string Part1Result => "98416";
     public async Task ExecuteAsync()
@@ -35,6 +36,11 @@ internal class Day16Part1 : IPart1Challenge
                 for (var j = 0; j < x.Length; j++)
                 {
                     var y = x[j];
+                    if (y == '.')
+                        y = ' ';
+                    if (y == '#')
+                        y = '.';
+
                     Console.Write(answer.Item2.Contains((i, j)) ? 'P' : y);
                 }
                 Console.WriteLine();
@@ -62,6 +68,13 @@ internal class Day16Part1 : IPart1Challenge
             }
         }
 
+        const bool logToConsole = false;
+        if (logToConsole)
+        {
+            Console.SetBufferSize(Console.BufferWidth, Math.Max(Console.BufferHeight, map.Length + 2));
+            Console.CursorVisible = false;
+        }
+
         while (stack.Count > 0)
         {
             var item = stack.Pop();
@@ -70,12 +83,39 @@ internal class Day16Part1 : IPart1Challenge
             if (item.answer >= globalMin)
                 continue;
 
+            if (logToConsole && item.answer is < 100000 and > 97000)
+            {
+                Console.SetCursorPosition(0, 0);
+
+                var stringBuilder = new StringBuilder();
+                for (var i = 0; i < map.Length; i++)
+                {
+                    var x = map[i];
+                    for (var j = 0; j < x.Length; j++)
+                    {
+                        var y = x[j];
+                        if (y == '.')
+                            y = ' ';
+                        if (y == '#')
+                            y = '.';
+
+                        stringBuilder.Append(item.seen.Contains((i, j)) ? 'O' : y);
+                    }
+                    if (i != map.Length - 1)
+                        stringBuilder.AppendLine();
+                }
+
+                Console.Write(stringBuilder);
+                Console.SetCursorPosition(0, map.Length + 1);
+            }
+
             if (map[item.i][item.j] == 'E')
             {
                 if (item.answer <= globalMin)
                 {
                     globalMin = item.answer;
                     possibleAnswers.Add((item.answer, item.seen.ToHashSet()));
+
                 }
                 continue;
             }
