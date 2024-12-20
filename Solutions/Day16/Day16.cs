@@ -307,7 +307,11 @@ internal enum Direction
     Ri,
     Do,
     Le,
-    Up
+    Up,
+    ToRi,
+    ToLe,
+    BoRi,
+    BoLe
 }
 
 internal class Helper
