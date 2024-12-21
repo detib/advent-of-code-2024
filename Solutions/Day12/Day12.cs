@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-
-namespace Solutions.Day12;
+﻿namespace Solutions.Day12;
 
 internal class Day12Part1 : IPart1Challenge
 {
@@ -128,7 +126,7 @@ internal class Day12Part2 : IPart2Challenge
 
                 if (downValue != currentPlantValue && leftValue != currentPlantValue)
                     corners++;
-                
+
                 if (leftValue != currentPlantValue && upValue != currentPlantValue)
                     corners++;
 

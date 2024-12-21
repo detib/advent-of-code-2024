@@ -93,7 +93,7 @@ internal class Day9Part2 : IPart2Challenge
             }
         }
 
-        for (var i = itemList.Count - 1; i >= 0; i--) 
+        for (var i = itemList.Count - 1; i >= 0; i--)
         {
             if (!itemList[i].IsEmptySpace)
             {
@@ -117,7 +117,7 @@ internal class Day9Part2 : IPart2Challenge
                         }
 
                         break;
-                    } 
+                    }
                 }
             }
         }

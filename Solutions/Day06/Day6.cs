@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Runtime;
 using static Solutions.Day06.Helper;
 
 namespace Solutions.Day06;

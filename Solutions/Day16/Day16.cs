@@ -51,7 +51,7 @@ internal class Day16Part1 : IPart1Challenge
 
 internal class Day16Part2 : IPart2Challenge
 {
-    public DateTime Day => new(2024, 12, 16);   
+    public DateTime Day => new(2024, 12, 16);
     public bool IsActive => false;
     public string Name => "Reindeer Maze";
     public string Part2Result => "471";

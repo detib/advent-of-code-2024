@@ -3,7 +3,6 @@ global using static Solutions.Tools;
 
 using System.Diagnostics;
 using System.Reflection;
-using Solutions;
 
 var assembly = Assembly.GetExecutingAssembly();
 

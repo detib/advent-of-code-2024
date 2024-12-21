@@ -2,7 +2,7 @@
 
 internal class Day1 : IPart1Challenge, IPart2Challenge
 {
-    public DateTime Day => new (2024, 12, 1);
+    public DateTime Day => new(2024, 12, 1);
     public string Name => "Historian Hysteria";
     public bool IsActive => false;
     public string Part1Result => "1341714";

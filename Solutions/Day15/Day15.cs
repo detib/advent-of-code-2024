@@ -348,7 +348,7 @@ internal static class Helper
 
                     lock (lockObject)
                         processedFrames++;
-                    
+
                     Console.WriteLine($"Processed frame {processedFrames} of {totalFrames}");
                     Console.Clear();
                 });

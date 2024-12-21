@@ -36,7 +36,7 @@ internal class Day8Part1 : IPart1Challenge
                                 var rightAntinodeX = k + distanceX;
                                 var rightAntinodeY = l + distanceY;
 
-                                if (IsWithinBounds(map, (leftAntinodeX, leftAntinodeY)))    
+                                if (IsWithinBounds(map, (leftAntinodeX, leftAntinodeY)))
                                 {
                                     antinodes.Add((leftAntinodeX, leftAntinodeY));
                                 }

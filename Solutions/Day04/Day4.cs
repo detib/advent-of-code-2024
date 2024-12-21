@@ -104,7 +104,8 @@ internal class Day4Part2 : IPart2Challenge
 
                         if (firstDiagonal is "MAS" or "SAM" && secondDiagonal is "MAS" or "SAM")
                             result++;
-                    } catch {} // for out of bounds
+                    }
+                    catch { } // for out of bounds
                 }
             }
         }

@@ -56,7 +56,7 @@ internal class Day11Part1 : IPart1Challenge
 internal class Day11Part2 : IPart2Challenge
 {
     public DateTime Day => new(2024, 12, 11);
-    public bool IsActive => false; 
+    public bool IsActive => false;
     public string Name => "Plutonian Pebbles";
     public string Part2Result => "244782991106220";
 
@@ -93,7 +93,7 @@ internal class Day11Part2 : IPart2Challenge
 
             Cache.Add($"1-{blinksDone - 1}", result);
 
-            return result; 
+            return result;
         }
 
         if (stone.Length % 2 == 0)
@@ -120,7 +120,7 @@ internal class Day11Part2 : IPart2Challenge
 
                 Cache.Add($"{rightHalf2}-{blinksDone - 1}", cacheItem2);
             }
-            
+
             return cacheItem1 + cacheItem2;
         }
 

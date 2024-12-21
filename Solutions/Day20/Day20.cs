@@ -27,7 +27,7 @@ internal class Day20Part1 : IPart1Challenge
             {
                 if (map[i][j] == '#') continue;
                 var currentDistance = distances[i][j];
-                
+
                 foreach (var value in ((int i, int j)[])[.. Diagonals.Select(x => x.Value).ToArray(), .. Sides.Select(x => (x.Value.i * 2, x.Value.j * 2)).ToArray()])
                 {
                     if (!IsWithinBounds(map, (i + value.i, j + value.j)))
@@ -162,7 +162,7 @@ internal class Day20Part2 : IPart2Challenge
                             nextPointj >= map[nextPointi].Length) continue;
 
                         var distance = Math.Abs(di) + Math.Abs(dj);
-                        
+
                         if (distance is <= 20 and >= 2)
                         {
                             var nextDistance = distances[nextPointi][nextPointj];
