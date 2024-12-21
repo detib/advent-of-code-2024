@@ -1,8 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Runtime;
-using static Solutions.Day6.Helper;
+using static Solutions.Day06.Helper;
 
-namespace Solutions.Day6;
+namespace Solutions.Day06;
 
 internal class Day6Part1 : IPart1Challenge
 {
@@ -13,7 +13,7 @@ internal class Day6Part1 : IPart1Challenge
 
     public async Task ExecuteAsync()
     {
-        var map = await File.ReadAllLinesAsync("./Day6/input.txt");
+        var map = await File.ReadAllLinesAsync("./Day06/input.txt");
         const char UP = '^';
         const char RI = '>';
         const char DO = 'v';
@@ -141,7 +141,7 @@ internal class Day6Part2 : IPart2Challenge
 
     public async Task ExecuteAsync()
     {
-        var map = await File.ReadAllLinesAsync("./Day6/input.txt");
+        var map = await File.ReadAllLinesAsync("./Day06/input.txt");
         var visited = new List<(char, int, int)>();
         var (guard, i, j) = GetGuardPosition(map);
 

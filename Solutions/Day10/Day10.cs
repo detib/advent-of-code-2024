@@ -2,7 +2,6 @@
 
 internal class Day10Part1 : IPart1Challenge
 {
-
     public DateTime Day => new(2024, 12, 10);
     public bool IsActive => false;
     public string Name => "Hoof It";
@@ -12,10 +11,10 @@ internal class Day10Part1 : IPart1Challenge
     {
         var trailheadMap = (await File.ReadAllLinesAsync("./Day10/input.txt")).Select(x => x.ToCharArray().Select(y => int.Parse(y.ToString())).ToArray()).ToArray();
 
-        int trailHeadScore = 0;
-        for (int i = 0; i < trailheadMap.Length; i++)
+        var trailHeadScore = 0;
+        for (var i = 0; i < trailheadMap.Length; i++)
         {
-            for (int j = 0; j < trailheadMap[i].Length; j++)
+            for (var j = 0; j < trailheadMap[i].Length; j++)
             {
                 var trailHead = trailheadMap[i][j];
                 if (trailHead == 0)
@@ -28,18 +27,10 @@ internal class Day10Part1 : IPart1Challenge
         Console.WriteLine(trailHeadScore);
     }
 
-    private readonly List<(int X, int Y)> _directions =
-    [
-        (1, 0),
-        (0, 1),
-        (-1, 0),
-        (0, -1),
-    ];
-
-    private int FindTrailHeadScore(int[][] trailHead, int i, int j)
+    private static int FindTrailHeadScore(int[][] trailHead, int i, int j)
     {
         var visited = new Stack<(int, int, int value)>();
-        var stack = new Stack<(int, int, int value)>();
+        var stack = new Stack<(int i, int j, int value)>();
 
         stack.Push((i, j, trailHead[i][j]));
 
@@ -47,20 +38,19 @@ internal class Day10Part1 : IPart1Challenge
         {
             var trailheadPosition = stack.Pop();
 
-            if (!visited.Contains((trailheadPosition)))
+            if (!visited.Contains(trailheadPosition))
             {
                 visited.Push(trailheadPosition);
 
-                foreach (var direction in _directions)
+                foreach (var direction in Sides.Values)
                 {
-                    if (trailheadPosition.Item1 + direction.X >= 0 && trailheadPosition.Item1 + direction.X < trailHead.Length &&
-                        trailheadPosition.Item2 + direction.Y >= 0 && trailheadPosition.Item2 + direction.Y < trailHead[0].Length)
+                    if (IsWithinBounds(trailHead, (trailheadPosition.Item1 + direction.i, trailheadPosition.Item2 + direction.j)))
                     {
-                        var nextItem = trailHead[trailheadPosition.Item1 + direction.X][trailheadPosition.Item2 + direction.Y];
+                        var nextItem = trailHead[trailheadPosition.Item1 + direction.i][trailheadPosition.Item2 + direction.j];
 
                         if (nextItem - 1 == trailheadPosition.value)
                         {
-                            stack.Push((trailheadPosition.Item1 + direction.X, trailheadPosition.Item2 + direction.Y, nextItem));
+                            stack.Push((trailheadPosition.Item1 + direction.i, trailheadPosition.Item2 + direction.j, nextItem));
                         }
                     }
                 }
@@ -98,18 +88,10 @@ internal class Day10Part2 : IPart2Challenge
         Console.WriteLine(trailHeadRating);
     }
 
-    private readonly List<(int X, int Y)> _directions =
-    [
-        (1, 0),
-        (0, 1),
-        (-1, 0),
-        (0, -1),
-    ];
-
-    private int FindTrailHeadRating(int[][] trailHead, int i, int j)
+    private static int FindTrailHeadRating(int[][] trailHead, int i, int j)
     {
         var visited = new Stack<(int, int, int value)>();
-        var stack = new Stack<(int, int, int value)>();
+        var stack = new Stack<(int i, int j, int value)>();
 
         stack.Push((i, j, trailHead[i][j]));
 
@@ -124,19 +106,16 @@ internal class Day10Part2 : IPart2Challenge
             //{
             visited.Push(trailheadPosition);
 
-            foreach (var direction in _directions)
+            foreach (var direction in Sides.Values)
             {
-                if (trailheadPosition.Item1 + direction.X >= 0 &&
-                    trailheadPosition.Item1 + direction.X < trailHead.Length &&
-                    trailheadPosition.Item2 + direction.Y >= 0 &&
-                    trailheadPosition.Item2 + direction.Y < trailHead[0].Length)
+                if (IsWithinBounds(trailHead, (trailheadPosition.Item1 + direction.i, trailheadPosition.Item2 + direction.j)))
                 {
                     var nextItem =
-                        trailHead[trailheadPosition.Item1 + direction.X][trailheadPosition.Item2 + direction.Y];
+                        trailHead[trailheadPosition.Item1 + direction.i][trailheadPosition.Item2 + direction.j];
 
                     if (nextItem - 1 == trailheadPosition.value)
                     {
-                        stack.Push((trailheadPosition.Item1 + direction.X, trailheadPosition.Item2 + direction.Y,
+                        stack.Push((trailheadPosition.Item1 + direction.i, trailheadPosition.Item2 + direction.j,
                             nextItem));
                     }
                 }

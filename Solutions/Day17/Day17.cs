@@ -1,7 +1,4 @@
-﻿using Microsoft.Win32;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace Solutions.Day17;
 
@@ -21,88 +18,9 @@ internal class Day17Part1 : IPart1Challenge
 
         var program = lines[1].Split("Program: ")[1].Split(',').Select(int.Parse).ToArray();
 
-        var answer = new List<int>();
-        for (var instructionPointer = 1; instructionPointer < program.Length; instructionPointer++)
-        {
-            var opcode = program[instructionPointer - 1];
-            var operand = program[instructionPointer];
-
-            if (opcode == 0)
-            {
-                var numerator = registerA;
-                var exponent = GetComboOperand(operand);
-
-                var denominator = Math.Pow(2, exponent);
-
-                registerA = (int)(numerator / denominator);
-            }
-
-            if (opcode == 1)
-            {
-                registerB ^= operand;
-            }
-
-            if (opcode == 2)
-            {
-                registerB = GetComboOperand(operand) % 8;
-            }
-
-            if (opcode == 3 && registerA != 0)
-            {
-                instructionPointer = operand;
-                continue;
-            }
-
-            if (opcode == 4)
-            {
-                registerB ^= registerC;
-            }
-
-            if (opcode == 5)
-            {
-                var outCommand = GetComboOperand(operand) % 8;
-                answer.Add(outCommand);
-            }
-
-            if (opcode == 6)
-            {
-                var numerator = registerA;
-                var exponent = GetComboOperand(operand);
-
-                var denominator = Math.Pow(2, exponent);
-
-                registerB = (int)(numerator / denominator);
-            }
-
-            if (opcode == 7)
-            {
-                var numerator = registerA;
-                var exponent = GetComboOperand(operand);
-
-                var denominator = Math.Pow(2, exponent);
-
-                registerC = (int)(numerator / denominator);
-            }
-
-
-
-            instructionPointer++;
-        }
+        var answer = Day17.GetAnswerForProgram(program, registerA, registerB, registerC);
 
         Console.WriteLine(string.Join(',', answer));
-
-        return;
-
-        int GetComboOperand(int operand)
-        {
-            return operand switch
-            {
-                4 => registerA,
-                5 => registerB,
-                6 => registerC,
-                _ => operand
-            };
-        }
     }
 }
 
@@ -132,7 +50,7 @@ internal class Day17Part2 : IPart2Challenge
                 for (var j = 0; j < 8; j++)
                 {
                     var target = candidate * 8 + j;
-                    var programOutput = GetAnswerForProgram(program, target, registerB, registerC);
+                    var programOutput = Day17.GetAnswerForProgram(program, target, registerB, registerC);
 
                     var a = program[^(((int)i) + 1)..];
                     if (a.SequenceEqual(programOutput))
@@ -149,23 +67,25 @@ internal class Day17Part2 : IPart2Challenge
 
         Console.WriteLine(answer);
     }
+}
 
+internal static class Day17
+{
     public static List<int> GetAnswerForProgram(int[] program, BigInteger registerA, BigInteger registerB, BigInteger registerC)
     {
         var programOutput = new List<int>();
-        for (int instructionPointer = 1; instructionPointer < program.Length; instructionPointer++)
+        for (var instructionPointer = 1; instructionPointer < program.Length; instructionPointer++)
         {
             var opcode = program[instructionPointer - 1];
             var operand = program[instructionPointer];
 
             if (opcode == 0)
             {
-                var numerator = registerA;
                 var exponent = GetComboOperand(operand);
 
                 var denominator = BigInteger.Pow(2, (int)exponent);
 
-                registerA = numerator / denominator;
+                registerA /= denominator;
             }
 
             if (opcode == 1)
@@ -197,22 +117,20 @@ internal class Day17Part2 : IPart2Challenge
 
             if (opcode == 6)
             {
-                var numerator = registerA;
                 var exponent = GetComboOperand(operand);
 
                 var denominator = BigInteger.Pow(2, (int)exponent);
 
-                registerB = numerator / denominator;
+                registerB = registerA / denominator;
             }
 
             if (opcode == 7)
             {
-                var numerator = registerA;
                 var exponent = GetComboOperand(operand);
 
                 var denominator = BigInteger.Pow(2, (int)exponent);
 
-                registerC = numerator / denominator;
+                registerC = registerA / denominator;
             }
 
 

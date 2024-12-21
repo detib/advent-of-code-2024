@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Solutions.Day3;
+namespace Solutions.Day03;
 
 internal class Day3Part1 : IPart1Challenge
 {
@@ -11,7 +11,7 @@ internal class Day3Part1 : IPart1Challenge
 
     public async Task ExecuteAsync()
     {
-        var sections = await File.ReadAllLinesAsync("./Day3/input.txt");
+        var sections = await File.ReadAllLinesAsync("./Day03/input.txt");
 
         long total = 0;
         foreach (var section in sections)
@@ -37,7 +37,7 @@ internal class Day3Part2 : IPart2Challenge
 
     public async Task ExecuteAsync()
     {
-        var sections = await File.ReadAllLinesAsync("./Day3/input.txt");
+        var sections = await File.ReadAllLinesAsync("./Day03/input.txt");
         var section = "do()" + string.Join("", sections); // add do() to "enable" the start of the program
         long total = 0;
 

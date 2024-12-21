@@ -1,4 +1,4 @@
-﻿namespace Solutions.Day4;
+﻿namespace Solutions.Day04;
 
 internal class Day4Part1 : IPart1Challenge
 {
@@ -9,7 +9,7 @@ internal class Day4Part1 : IPart1Challenge
 
     public async Task ExecuteAsync()
     {
-        var wordSearch = await File.ReadAllLinesAsync("./Day4/input.txt");
+        var wordSearch = await File.ReadAllLinesAsync("./Day04/input.txt");
 
         int result = 0;
         for (var i = 0; i < wordSearch.Length; i++)
@@ -81,9 +81,9 @@ internal class Day4Part2 : IPart2Challenge
 
     public async Task ExecuteAsync()
     {
-        var wordSearch = await File.ReadAllLinesAsync("./Day4/input.txt");
+        var wordSearch = await File.ReadAllLinesAsync("./Day04/input.txt");
 
-        int result = 0;
+        var result = 0;
         for (var i = 0; i < wordSearch.Length; i++)
         {
             var word = wordSearch[i];

@@ -1,7 +1,4 @@
-﻿using Solutions.Day16;
-using static Solutions.Day18.Helper;
-
-namespace Solutions.Day18;
+﻿namespace Solutions.Day18;
 
 internal class Day18Part1 : IPart1Challenge
 {
@@ -35,10 +32,9 @@ internal class Day18Part1 : IPart1Challenge
 
         (int i, int j) initialPosition = (0, 0);
 
-        var stack = new Stack<(int i, int j, Direction dir, int answer, HashSet<(int, int)> seen)>();
+        var stack = new Stack<(int i, int j, int answer, HashSet<(int, int)> seen)>();
 
-        stack.Push((initialPosition.i, initialPosition.j, Direction.Ri, answer: 0, []));
-        stack.Push((initialPosition.i, initialPosition.j, Direction.Do, answer: 0, []));
+        stack.Push((initialPosition.i, initialPosition.j, answer: 0, []));
 
         var answer1 = FindPossibleRoutes(map, stack);
 
@@ -65,7 +61,7 @@ internal class Day18Part1 : IPart1Challenge
         }
     }
 
-    private static IEnumerable<(int, HashSet<(int, int)>)> FindPossibleRoutes(char[][] map, Stack<(int i, int j, Direction dir, int answer, HashSet<(int, int)> seen)> stack)
+    private static IEnumerable<(int, HashSet<(int, int)>)> FindPossibleRoutes(char[][] map, Stack<(int i, int j, int answer, HashSet<(int, int)> seen)> stack)
     {
         var possibleAnswers = new List<(int, HashSet<(int, int)>)>();
 
@@ -91,30 +87,6 @@ internal class Day18Part1 : IPart1Challenge
             if (item.answer >= globalMin)
                 continue;
 
-            //Console.SetCursorPosition(0, 0);
-
-            //var stringBuilder = new StringBuilder();
-            //for (var i = 0; i < map.Length; i++)
-            //{
-            //    var x = map[i];
-            //    for (var j = 0; j < x.Length; j++)
-            //    {
-            //        var y = x[j];
-            //        //if (y == '.')
-            //        //    y = ' ';
-            //        //if (y == '#')
-            //        //    y = '.';
-
-            //        stringBuilder.Append(item.seen.Contains((i, j)) ? 'O' : y);
-            //    }
-            //    if (i != map.Length - 1)
-            //        stringBuilder.AppendLine();
-            //}
-
-            //Console.Write(stringBuilder);
-            //Console.SetCursorPosition(0, map.Length + 1);
-
-
 
             if (item.i == finalPosition.i && item.j == finalPosition.j)
             {
@@ -126,9 +98,9 @@ internal class Day18Part1 : IPart1Challenge
                 }
                 continue;
             }
-            var moves = new List<(int i, int j, Direction newDir, int answer, HashSet<(int, int)> newSeen)>();
+            var moves = new List<(int i, int j, int answer, HashSet<(int, int)> newSeen)>();
 
-            foreach (var (possibleDirection, direction) in Directions)
+            foreach (var (_, direction) in Sides)
             {
                 if (item.i + direction.i > 70
                     || item.i + direction.i < 0
@@ -153,7 +125,6 @@ internal class Day18Part1 : IPart1Challenge
                 moves.Add((
                     item.i + direction.i,
                     item.j + direction.j,
-                    possibleDirection,
                     item.answer + 1,
                     newSeen
                 ));
@@ -166,7 +137,7 @@ internal class Day18Part1 : IPart1Challenge
             foreach (var move in moves.Where(move => distances[move.i][move.j] > move.answer))
             {
                 distances[move.i][move.j] = move.answer;
-                stack.Push((move.i, move.j, move.newDir, move.answer, move.newSeen));
+                stack.Push((move.i, move.j, move.answer, move.newSeen));
             }
         }
 
@@ -218,10 +189,9 @@ internal class Day18Part2 : IPart2Challenge
 
             (int i, int j) initialPosition = (0, 0);
 
-            var stack = new Stack<(int i, int j, Direction dir, int answer, HashSet<(int, int)> seen)>();
+            var stack = new Stack<(int i, int j, int answer, HashSet<(int, int)> seen)>();
 
-            stack.Push((initialPosition.i, initialPosition.j, Direction.Ri, answer: 0, []));
-            stack.Push((initialPosition.i, initialPosition.j, Direction.Do, answer: 0, []));
+            stack.Push((initialPosition.i, initialPosition.j, answer: 0, []));
 
             var possibleRoutes = RouteExists(map, stack);
 
@@ -233,7 +203,7 @@ internal class Day18Part2 : IPart2Challenge
         }
     }
 
-    private static bool RouteExists(char[][] map, Stack<(int i, int j, Direction dir, int answer, HashSet<(int, int)> seen)> stack)
+    private static bool RouteExists(char[][] map, Stack<(int i, int j, int answer, HashSet<(int, int)> seen)> stack)
     {
         (int i, int j) finalPosition = (70, 70);
         var globalMin = int.MaxValue;
@@ -262,9 +232,9 @@ internal class Day18Part2 : IPart2Challenge
                 return true;
             }
 
-            var moves = new List<(int i, int j, Direction newDir, int answer, HashSet<(int, int)> newSeen)>();
+            var moves = new List<(int i, int j, int answer, HashSet<(int, int)> newSeen)>();
 
-            foreach (var (possibleDirection, direction) in Directions)
+            foreach (var (_, direction) in Sides)
             {
                 if (item.i + direction.i > 70
                     || item.i + direction.i < 0
@@ -289,7 +259,6 @@ internal class Day18Part2 : IPart2Challenge
                 moves.Add((
                     item.i + direction.i,
                     item.j + direction.j,
-                    possibleDirection,
                     item.answer + 1,
                     newSeen
                 ));
@@ -302,22 +271,10 @@ internal class Day18Part2 : IPart2Challenge
             foreach (var move in moves.Where(move => distances[move.i][move.j] > move.answer))
             {
                 distances[move.i][move.j] = move.answer;
-                stack.Push((move.i, move.j, move.newDir, move.answer, move.newSeen));
+                stack.Push((move.i, move.j, move.answer, move.newSeen));
             }
         }
 
         return false;
     }
-
-}
-
-internal class Helper
-{
-    internal static readonly Dictionary<Direction, (int i, int j)> Directions = new()
-    {
-        { Direction.Ri, (0, 1) },
-        { Direction.Do, (1, 0) },
-        { Direction.Le, (0, -1) },
-        { Direction.Up, (-1, 0) },
-    };
 }

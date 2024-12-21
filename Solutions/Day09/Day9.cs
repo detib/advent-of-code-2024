@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Solutions.Day9;
+namespace Solutions.Day09;
 
 internal class Day9Part1 : IPart1Challenge
 {
@@ -11,7 +11,7 @@ internal class Day9Part1 : IPart1Challenge
 
     public async Task ExecuteAsync()
     {
-        var diskMap = await File.ReadAllTextAsync("./Day9/input.txt");
+        var diskMap = await File.ReadAllTextAsync("./Day09/input.txt");
 
         var itemList = new List<Item>();
 
@@ -21,7 +21,7 @@ internal class Day9Part1 : IPart1Challenge
             var diskItem = diskMap[index];
 
             var itemId = index % 2 == 0 ? (id++).ToString() : ".";
-            for (int i = 0; i < int.Parse(diskItem.ToString()); i++)
+            for (var i = 0; i < int.Parse(diskItem.ToString()); i++)
             {
                 var item = new Item
                 {
@@ -71,7 +71,7 @@ internal class Day9Part2 : IPart2Challenge
 
     public async Task ExecuteAsync()
     {
-        var diskMap = await File.ReadAllTextAsync("./Day9/input.txt");
+        var diskMap = await File.ReadAllTextAsync("./Day09/input.txt");
 
         var itemList = new List<Item>();
 
@@ -122,7 +122,6 @@ internal class Day9Part2 : IPart2Challenge
             }
         }
 
-
         BigInteger checksum = 0;
         for (var index = 0; index < itemList.Count; index++)
         {
@@ -131,7 +130,6 @@ internal class Day9Part2 : IPart2Challenge
         }
 
         Console.WriteLine(checksum); // 6321896265143
-
     }
 }
 

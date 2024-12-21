@@ -15,9 +15,9 @@ internal class Day12Part1 : IPart1Challenge
         var answer = 0;
         List<(int X, int Y)> alreadyVisitedSpots = [];
 
-        for (int i = 0; i < map.Length; i++)
+        for (var i = 0; i < map.Length; i++)
         {
-            for (int j = 0; j < map[i].Length; j++)
+            for (var j = 0; j < map[i].Length; j++)
             {
                 if (alreadyVisitedSpots.Contains((i, j)))
                     continue;
@@ -28,15 +28,7 @@ internal class Day12Part1 : IPart1Challenge
         Console.WriteLine(answer);
     }
 
-    private readonly List<(int X, int Y)> _directions =
-    [
-        (1, 0),
-        (0, 1),
-        (-1, 0),
-        (0, -1),
-    ];
-
-    private int FindPriceOfRegion(char[][] map, int i, int j, List<(int X, int Y)> alreadyCalculatedSpots)
+    private static int FindPriceOfRegion(char[][] map, int i, int j, List<(int X, int Y)> alreadyCalculatedSpots)
     {
         var visited = new Stack<(int X, int Y)>();
         var stack = new Stack<(int X, int Y)>();
@@ -51,16 +43,15 @@ internal class Day12Part1 : IPart1Challenge
             {
                 visited.Push(currentPlant);
 
-                foreach (var direction in _directions)
+                foreach (var direction in Sides.Values)
                 {
-                    if (currentPlant.X + direction.X >= 0 && currentPlant.X + direction.X < map.Length &&
-                        currentPlant.Y + direction.Y >= 0 && currentPlant.Y + direction.Y < map[0].Length)
+                    if (IsWithinBounds(map, (currentPlant.X + direction.i, currentPlant.Y + direction.j)))
                     {
-                        var nextItem = map[currentPlant.X + direction.X][currentPlant.Y + direction.Y];
+                        var nextItem = map[currentPlant.X + direction.i][currentPlant.Y + direction.j];
 
                         if (nextItem == map[currentPlant.X][currentPlant.Y])
                         {
-                            stack.Push((currentPlant.X + direction.X, currentPlant.Y + direction.Y));
+                            stack.Push((currentPlant.X + direction.i, currentPlant.Y + direction.j));
                         }
                         else
                         {
@@ -94,9 +85,9 @@ internal class Day12Part2 : IPart2Challenge
         var answer = 0;
         List<(int X, int Y)> alreadyVisitedSpots = [];
 
-        for (int i = 0; i < map.Length; i++)
+        for (var i = 0; i < map.Length; i++)
         {
-            for (int j = 0; j < map[i].Length; j++)
+            for (var j = 0; j < map[i].Length; j++)
             {
                 if (alreadyVisitedSpots.Contains((i, j)))
                     continue;
@@ -107,21 +98,12 @@ internal class Day12Part2 : IPart2Challenge
         Console.WriteLine(answer);
     }
 
-    private readonly List<(int X, int Y)> _directions =
-    [
-        (1, 0),
-        (0, 1),
-        (-1, 0),
-        (0, -1),
-    ];
-
-    private int FindPriceOfRegion(char[][] map, int i, int j, List<(int X, int Y)> alreadyCalculatedSpots)
+    private static int FindPriceOfRegion(char[][] map, int i, int j, List<(int X, int Y)> alreadyCalculatedSpots)
     {
         var visited = new Stack<(int X, int Y)>();
         var stack = new Stack<(int X, int Y)>();
 
         stack.Push((i, j));
-        var sides = 0;
         var corners = 0;
         while (stack.Count > 0)
         {
@@ -171,16 +153,15 @@ internal class Day12Part2 : IPart2Challenge
                     corners++;
 
 
-                foreach (var direction in _directions)
+                foreach (var direction in Sides.Values)
                 {
-                    if (currentPlant.X + direction.X >= 0 && currentPlant.X + direction.X < map.Length &&
-                        currentPlant.Y + direction.Y >= 0 && currentPlant.Y + direction.Y < map[0].Length)
+                    if (IsWithinBounds(map, (currentPlant.X + direction.i, currentPlant.Y + direction.j)))
                     {
-                        var nextItem = map[currentPlant.X + direction.X][currentPlant.Y + direction.Y];
+                        var nextItem = map[currentPlant.X + direction.i][currentPlant.Y + direction.j];
 
                         if (nextItem == map[currentPlant.X][currentPlant.Y])
                         {
-                            stack.Push((currentPlant.X + direction.X, currentPlant.Y + direction.Y));
+                            stack.Push((currentPlant.X + direction.i, currentPlant.Y + direction.j));
                         }
                     }
                 }

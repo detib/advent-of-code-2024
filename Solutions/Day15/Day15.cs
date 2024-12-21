@@ -1,8 +1,7 @@
-﻿using System.Drawing.Imaging;
+﻿using System.Diagnostics;
 using System.Drawing;
-using System.Text;
+using System.Drawing.Imaging;
 using static Solutions.Day15.Helper;
-using System.Diagnostics;
 
 namespace Solutions.Day15;
 
@@ -24,7 +23,7 @@ internal class Day15Part1 : IPart1Challenge
         foreach (var nextMove in moves)
         {
             allFrames.Add(map.Select(x => x.ToArray()).ToArray());
-            var robotPosition = GetRobotPosition(map);
+            var robotPosition = GetItemPosition(map, '@');
             var direction = Directions[nextMove];
 
             //var outputBuffer = new StringBuilder();
@@ -146,7 +145,7 @@ internal class Day15Part2 : IPart2Challenge
         {
             allFrames.Add(map.Select(x => x.ToArray()).ToArray());
 
-            var robotPosition = GetRobotPosition(map);
+            var robotPosition = GetItemPosition(map, '@');
 
             var direction = Directions[nextMove];
 
@@ -293,22 +292,6 @@ internal static class Helper
         { '<', (0, -1) },
         { '^', (-1, 0) }
     };
-
-    internal static (int i, int j) GetRobotPosition(char[][] map)
-    {
-        for (var i = 0; i < map.Length; i++)
-        {
-            for (var j = 0; j < map[i].Length; j++)
-            {
-                if (map[i][j] is '@')
-                {
-                    return (i, j);
-                }
-            }
-        }
-
-        return (-1, -1);
-    }
 
     internal static List<char[][]> RemoveDuplicateFrames(List<char[][]> frames)
     {

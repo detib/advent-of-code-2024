@@ -134,6 +134,5 @@ internal class Day11Part2 : IPart2Challenge
         }
 
         return cacheItem3;
-
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Solutions.Day5;
+﻿namespace Solutions.Day05;
 
 internal class Day5Part1 : IPart1Challenge
 {
@@ -9,7 +9,7 @@ internal class Day5Part1 : IPart1Challenge
 
     public async Task ExecuteAsync()
     {
-        var allInput = await File.ReadAllTextAsync("./Day5/input.txt");
+        var allInput = await File.ReadAllTextAsync("./Day05/input.txt");
 
         var input = allInput.Split("\r\n\r\n");
 
@@ -72,7 +72,7 @@ internal class Day5Part2 : IPart2Challenge
 
     public async Task ExecuteAsync()
     {
-        var allInput = await File.ReadAllTextAsync("./Day5/input.txt");
+        var allInput = await File.ReadAllTextAsync("./Day05/input.txt");
 
         var input = allInput.Split("\r\n\r\n");
 

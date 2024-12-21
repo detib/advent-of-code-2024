@@ -1,5 +1,4 @@
-﻿using System.Text;
-using static Solutions.Day16.Helper;
+﻿using static Solutions.Day16.Helper;
 
 namespace Solutions.Day16;
 
@@ -11,9 +10,9 @@ internal class Day16Part1 : IPart1Challenge
     public string Part1Result => "98416";
     public async Task ExecuteAsync()
     {
-        var map = (await File.ReadAllLinesAsync("./Day16/input.txt")).Select(x => x.ToCharArray()).ToArray();
+        var map = await ReadCharMap("./Day16/input.txt");
 
-        var initialReindeerPosition = GetReindeerPosition(map);
+        var initialReindeerPosition = GetItemPosition(map, 'S');
 
         var stack = new Stack<(int i, int j, Direction dir, int answer, HashSet<(int, int)> seen)>();
 
@@ -22,9 +21,9 @@ internal class Day16Part1 : IPart1Challenge
             (initialReindeerPosition.i, initialReindeerPosition.j)
         };
 
-        stack.Push((initialReindeerPosition.i, initialReindeerPosition.j, Direction.Ri, answer: 0, initialSeen.ToHashSet()));
+        stack.Push((initialReindeerPosition.i, initialReindeerPosition.j, Direction.R, answer: 0, initialSeen.ToHashSet()));
 
-        var answer1 = MoveReindeer(map, stack);
+        var answer1 = MoveReindeer(map, stack, bestPathOnly: true);
 
         foreach (var answer in answer1)
         {
@@ -48,134 +47,19 @@ internal class Day16Part1 : IPart1Challenge
             Console.WriteLine(string.Join("", Enumerable.Repeat("-", 100)));
         }
     }
-
-    private static IEnumerable<(int, HashSet<(int, int)>)> MoveReindeer(char[][] map, Stack<(int i, int j, Direction dir, int answer, HashSet<(int, int)> seen)> stack)
-    {
-        var possibleAnswers = new List<(int, HashSet<(int, int)>)>();
-
-        var finalPosition = GetReindeerPosition(map, 'E');
-
-        var globalMin = int.MaxValue;
-
-        var distances = new int[map.Length][];
-
-        for (var i = 0; i < distances.Length; i++)
-        {
-            distances[i] = new int[map[i].Length];
-            for (var index = 0; index < distances[i].Length; index++)
-            {
-                distances[i][index] = int.MaxValue;
-            }
-        }
-
-        const bool logToConsole = false;
-        if (logToConsole)
-        {
-            Console.SetBufferSize(Console.BufferWidth, Math.Max(Console.BufferHeight, map.Length + 2));
-            Console.CursorVisible = false;
-        }
-
-        while (stack.Count > 0)
-        {
-            var item = stack.Pop();
-            var currentSeen = item.seen;
-
-            if (item.answer >= globalMin)
-                continue;
-
-            if (logToConsole && item.answer is < 100000 and > 97000)
-            {
-                Console.SetCursorPosition(0, 0);
-
-                var stringBuilder = new StringBuilder();
-                for (var i = 0; i < map.Length; i++)
-                {
-                    var x = map[i];
-                    for (var j = 0; j < x.Length; j++)
-                    {
-                        var y = x[j];
-                        if (y == '.')
-                            y = ' ';
-                        if (y == '#')
-                            y = '.';
-
-                        stringBuilder.Append(item.seen.Contains((i, j)) ? 'O' : y);
-                    }
-                    if (i != map.Length - 1)
-                        stringBuilder.AppendLine();
-                }
-
-                Console.Write(stringBuilder);
-                Console.SetCursorPosition(0, map.Length + 1);
-            }
-
-            if (map[item.i][item.j] == 'E')
-            {
-                if (item.answer <= globalMin)
-                {
-                    globalMin = item.answer;
-                    possibleAnswers.Add((item.answer, item.seen.ToHashSet()));
-
-                }
-                continue;
-            }
-            var moves = new List<(int i, int j, Direction newDir, int answer, HashSet<(int, int)> newSeen)>();
-
-            foreach (var possibleDirection in PossibleMoves[item.dir])
-            {
-                var direction = Directions[possibleDirection];
-                if (currentSeen.Contains((item.i + direction.i, item.j + direction.j)))
-                    continue;
-
-                var nextPosition = map[item.i + direction.i][item.j + direction.j];
-                if (nextPosition == '#')
-                {
-                    continue;
-                }
-
-                var newSeen = new HashSet<(int, int)>(currentSeen)
-                {
-                    (item.i + direction.i, item.j + direction.j)
-                };
-
-                moves.Add((
-                    item.i + direction.i,
-                    item.j + direction.j,
-                    possibleDirection,
-                    item.answer + (item.dir == possibleDirection ? 1 : 1001),
-                    newSeen
-                ));
-            }
-
-            moves = moves
-                .OrderByDescending(move => Math.Abs(move.i - finalPosition.i) + Math.Abs(move.j - finalPosition.j))
-                .ToList();
-
-            foreach (var move in moves)
-            {
-                if (distances[move.i][move.j] > move.answer)
-                {
-                    distances[move.i][move.j] = move.answer;
-                    stack.Push((move.i, move.j, move.newDir, move.answer, move.newSeen));
-                }
-            }
-        }
-
-        return possibleAnswers.Where(x => x.Item1 == globalMin);
-    }
 }
 
 internal class Day16Part2 : IPart2Challenge
 {
-    public DateTime Day => new(2024, 12, 16);
+    public DateTime Day => new(2024, 12, 16);   
     public bool IsActive => false;
     public string Name => "Reindeer Maze";
     public string Part2Result => "471";
     public async Task ExecuteAsync()
     {
-        var map = (await File.ReadAllLinesAsync("./Day16/input.txt")).Select(x => x.ToCharArray()).ToArray();
+        var map = await ReadCharMap("./Day16/input.txt");
 
-        var initialReindeerPosition = GetReindeerPosition(map);
+        var initialReindeerPosition = GetItemPosition(map, 'S');
 
         var stack = new Stack<(int i, int j, Direction dir, int answer, HashSet<(int, int)> seen)>();
 
@@ -184,9 +68,9 @@ internal class Day16Part2 : IPart2Challenge
             (initialReindeerPosition.i, initialReindeerPosition.j)
         };
 
-        stack.Push((initialReindeerPosition.i, initialReindeerPosition.j, Direction.Ri, answer: 0, initialSeen.ToHashSet()));
+        stack.Push((initialReindeerPosition.i, initialReindeerPosition.j, Direction.R, answer: 0, initialSeen.ToHashSet()));
 
-        var reindeerPaths = MoveReindeer(map, stack).ToList();
+        var reindeerPaths = MoveReindeer(map, stack, bestPathOnly: false).ToList();
 
         var uniqueSpots = reindeerPaths.SelectMany(x => x.Item2).Distinct().ToList();
 
@@ -207,14 +91,26 @@ internal class Day16Part2 : IPart2Challenge
 
         Console.WriteLine(answer);
     }
+}
 
-    private static IEnumerable<(int, HashSet<(int, int)>)> MoveReindeer(char[][] map, Stack<(int i, int j, Direction dir, int answer, HashSet<(int, int)> seen)> stack)
+internal class Helper
+{
+    internal static readonly Dictionary<Direction, List<Direction>> PossibleMoves = new()
+    {
+        { Direction.R, [Direction.U, Direction.D, Direction.R] },
+        { Direction.D, [Direction.R, Direction.L, Direction.D] },
+        { Direction.L, [Direction.U, Direction.D, Direction.L] },
+        { Direction.U, [Direction.R, Direction.L, Direction.U] },
+    };
+
+    internal static IEnumerable<(int, HashSet<(int, int)>)> MoveReindeer(char[][] map,
+        Stack<(int i, int j, Direction dir, int answer, HashSet<(int, int)> seen)> stack, bool bestPathOnly)
     {
         var possibleAnswers = new List<(int, HashSet<(int, int)>)>();
 
-        var finalPosition = GetReindeerPosition(map, 'E');
+        var finalPosition = GetItemPosition(map, 'E');
 
-        var globalMin = 98416; // we can start this with int.MaxValue but since we know the result of the best path from the first part we use that
+        var globalMin = int.MaxValue; // we can start this with 98416 since we know it is the result of the best path from the first part
 
         var distances = new int[map.Length][];
 
@@ -226,7 +122,6 @@ internal class Day16Part2 : IPart2Challenge
                 distances[i][index] = int.MaxValue;
             }
         }
-
 
         while (stack.Count > 0)
         {
@@ -242,17 +137,19 @@ internal class Day16Part2 : IPart2Challenge
                     globalMin = item.answer;
                 possibleAnswers.Add((item.answer, item.seen.ToHashSet()));
 
-                distances = new int[map.Length][];
-
-                for (var i = 0; i < distances.Length; i++)
+                if (!bestPathOnly)
                 {
-                    distances[i] = new int[map[i].Length];
-                    for (var index = 0; index < distances[i].Length; index++)
+                    distances = new int[map.Length][];
+
+                    for (var i = 0; i < distances.Length; i++)
                     {
-                        distances[i][index] = int.MaxValue;
+                        distances[i] = new int[map[i].Length];
+                        for (var index = 0; index < distances[i].Length; index++)
+                        {
+                            distances[i][index] = int.MaxValue;
+                        }
                     }
                 }
-
                 continue;
             }
 
@@ -260,7 +157,7 @@ internal class Day16Part2 : IPart2Challenge
 
             foreach (var possibleDirection in PossibleMoves[item.dir])
             {
-                var direction = Directions[possibleDirection];
+                var direction = Sides[possibleDirection];
                 var nextPosition = map[item.i + direction.i][item.j + direction.j];
                 if (nextPosition == '#')
                 {
@@ -299,52 +196,5 @@ internal class Day16Part2 : IPart2Challenge
         }
 
         return possibleAnswers.Where(x => x.Item1 == globalMin);
-    }
-}
-
-internal enum Direction
-{
-    Ri,
-    Do,
-    Le,
-    Up,
-    ToRi,
-    ToLe,
-    BoRi,
-    BoLe
-}
-
-internal class Helper
-{
-    internal static readonly Dictionary<Direction, (int i, int j)> Directions = new()
-    {
-        { Direction.Ri, (0, 1) },
-        { Direction.Do, (1, 0) },
-        { Direction.Le, (0, -1) },
-        { Direction.Up, (-1, 0) },
-    };
-
-    internal static readonly Dictionary<Direction, List<Direction>> PossibleMoves = new()
-    {
-        { Direction.Ri, [Direction.Up, Direction.Do, Direction.Ri] },
-        { Direction.Do, [Direction.Ri, Direction.Le, Direction.Do] },
-        { Direction.Le, [Direction.Up, Direction.Do, Direction.Le] },
-        { Direction.Up, [Direction.Ri, Direction.Le, Direction.Up] },
-    };
-
-    internal static (int i, int j) GetReindeerPosition(char[][] map, char target = 'S')
-    {
-        for (var i = 0; i < map.Length; i++)
-        {
-            for (var j = 0; j < map[i].Length; j++)
-            {
-                if (map[i][j] == target)
-                {
-                    return (i, j);
-                }
-            }
-        }
-
-        return (-1, -1);
     }
 }

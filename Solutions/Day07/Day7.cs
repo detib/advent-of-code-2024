@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
-using static Solutions.Day7.Helper;
 
-namespace Solutions.Day7;
+namespace Solutions.Day07;
 
 
 internal class Day7Part1 : IPart1Challenge
@@ -13,7 +12,7 @@ internal class Day7Part1 : IPart1Challenge
 
     public async Task ExecuteAsync()
     {
-        var lines = await File.ReadAllLinesAsync("./Day7/input.txt");
+        var lines = await File.ReadAllLinesAsync("./Day07/input.txt");
 
         var possibleLines = new List<Line>();
         foreach (var line in lines)
@@ -90,7 +89,7 @@ internal class Day7Part2 : IPart2Challenge
 
     public async Task ExecuteAsync()
     {
-        var lines = await File.ReadAllLinesAsync("./Day7/input.txt");
+        var lines = await File.ReadAllLinesAsync("./Day07/input.txt");
 
         var possibleLines = new List<Line>();
         foreach (var line in lines)
@@ -160,18 +159,6 @@ internal class Day7Part2 : IPart2Challenge
         }
 
         return total;
-    }
-}
-
-internal static class Helper
-{
-    internal static IEnumerable<IEnumerable<T>>
-        GetPermutations<T>(List<T> list, int length)
-    {
-        if (length == 1) return list.Select(t => new[] { t });
-
-        return GetPermutations(list, length - 1)
-            .SelectMany(t => list, (t1, t2) => t1.Concat([t2]));
     }
 }
 

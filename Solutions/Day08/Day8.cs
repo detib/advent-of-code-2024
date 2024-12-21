@@ -1,4 +1,4 @@
-﻿namespace Solutions.Day8;
+﻿namespace Solutions.Day08;
 
 internal class Day8Part1 : IPart1Challenge
 {
@@ -9,7 +9,7 @@ internal class Day8Part1 : IPart1Challenge
 
     public async Task ExecuteAsync()
     {
-        var map = await File.ReadAllLinesAsync("./Day8/input.txt");
+        var map = await ReadCharMap("./Day08/input.txt");
 
         var antinodes = new List<(int, int)>();
 
@@ -20,9 +20,9 @@ internal class Day8Part1 : IPart1Challenge
                 var currentAntenna = map[i][j];
                 if (currentAntenna != '.')
                 {
-                    for (int k = 0; k < map.Length; k++)
+                    for (var k = 0; k < map.Length; k++)
                     {
-                        for (int l = 0; l < map[i].Length; l++)
+                        for (var l = 0; l < map[i].Length; l++)
                         {
                             var nextAntenna = map[k][l];
                             if (nextAntenna == currentAntenna && i != k && l != j)
@@ -36,12 +36,12 @@ internal class Day8Part1 : IPart1Challenge
                                 var rightAntinodeX = k + distanceX;
                                 var rightAntinodeY = l + distanceY;
 
-                                if (leftAntinodeX >= 0 && leftAntinodeY >= 0 && leftAntinodeX < map.Length && leftAntinodeY < map[i].Length)
+                                if (IsWithinBounds(map, (leftAntinodeX, leftAntinodeY)))    
                                 {
                                     antinodes.Add((leftAntinodeX, leftAntinodeY));
                                 }
 
-                                if (rightAntinodeX < map.Length && rightAntinodeY < map[i].Length && rightAntinodeX >= 0 && rightAntinodeY >= 0)
+                                if (IsWithinBounds(map, (rightAntinodeX, rightAntinodeY)))
                                 {
                                     antinodes.Add((rightAntinodeX, rightAntinodeY));
                                 }
@@ -65,7 +65,7 @@ internal class Day8Part2 : IPart2Challenge
 
     public async Task ExecuteAsync()
     {
-        var map = await File.ReadAllLinesAsync("./Day8/input.txt");
+        var map = await ReadCharMap("./Day08/input.txt");
 
         var antinodes = new List<(int, int)>();
 
@@ -99,12 +99,12 @@ internal class Day8Part2 : IPart2Challenge
                                     var rightAntinodeX = k + (distanceX * q);
                                     var rightAntinodeY = l + (distanceY * q);
 
-                                    if (leftAntinodeX >= 0 && leftAntinodeY >= 0 && leftAntinodeX < map.Length && leftAntinodeY < map[i].Length)
+                                    if (IsWithinBounds(map, (leftAntinodeX, leftAntinodeY)))
                                     {
                                         antinodes.Add((leftAntinodeX, leftAntinodeY));
                                     }
 
-                                    if (rightAntinodeX < map.Length && rightAntinodeY < map[i].Length && rightAntinodeX >= 0 && rightAntinodeY >= 0)
+                                    if (IsWithinBounds(map, (rightAntinodeX, rightAntinodeY)))
                                     {
                                         antinodes.Add((rightAntinodeX, rightAntinodeY));
                                     }
@@ -116,8 +116,7 @@ internal class Day8Part2 : IPart2Challenge
             }
         }
 
-
-        var ac = antinodes.Distinct();
+        var ac = antinodes.Distinct().ToHashSet();
         for (var i = 0; i < map.Length; i++)
         {
             for (var j = 0; j < map[i].Length; j++)
@@ -131,7 +130,6 @@ internal class Day8Part2 : IPart2Challenge
             }
             Console.WriteLine();
         }
-
 
         Console.WriteLine(antinodes.Distinct().Count()); // 1182
     }

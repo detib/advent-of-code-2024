@@ -1,4 +1,4 @@
-﻿namespace Solutions.Day1;
+﻿namespace Solutions.Day01;
 
 internal class Day1 : IPart1Challenge, IPart2Challenge
 {
@@ -10,7 +10,7 @@ internal class Day1 : IPart1Challenge, IPart2Challenge
 
     public async Task ExecuteAsync()
     {
-        var input = await File.ReadAllLinesAsync("./Day1/input.txt");
+        var input = await File.ReadAllLinesAsync("./Day01/input.txt");
 
         var firstList = new List<int>(input.Length);
         var secondList = new List<int>(input.Length);
@@ -28,7 +28,7 @@ internal class Day1 : IPart1Challenge, IPart2Challenge
 
         var difference = firstList.Select((t, i) => Math.Abs(t - secondList[i])).Sum();
 
-        Console.WriteLine(difference);
+        Console.WriteLine($"Difference: {difference}");
 
         var rightListCounts = new Dictionary<int, int>();
 
