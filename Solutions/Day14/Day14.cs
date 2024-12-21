@@ -143,24 +143,28 @@ internal class Day14Part2 : IPart2Challenge
                 }
             }
 
-            var map = CreateMatrix(initialGridX, initialGridY);
-            foreach (var robot1 in robots)
+            if (false)
             {
-                var value = map[robot1.YPosition][robot1.XPosition];
-
-                if (value == ".")
+                var map = CreateMatrix(initialGridX, initialGridY);
+                foreach (var robot1 in robots)
                 {
-                    map[robot1.YPosition][robot1.XPosition] = "1";
-                    continue;
+                    var value = map[robot1.YPosition][robot1.XPosition];
+
+                    if (value == ".")
+                    {
+                        map[robot1.YPosition][robot1.XPosition] = "1";
+                        continue;
+                    }
+
+                    var intValue = int.Parse(value);
+
+                    map[robot1.YPosition][robot1.XPosition] = (++intValue).ToString();
                 }
-
-                var intValue = int.Parse(value);
-
-                map[robot1.YPosition][robot1.XPosition] = (++intValue).ToString();
+                if (i is > 7500 and < 7700) // so we do not save too many images
+                    SaveMatrixAsImage(map, i);
             }
-            if (i is > 7500 and < 7700) // so we do not save too many images
-                SaveMatrixAsImage(map, i);
         }
+        Console.WriteLine("Image is found on frame 7672");
     }
 }
 

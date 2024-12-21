@@ -94,7 +94,8 @@ internal class Day15Part1 : IPart1Challenge
 
         Console.WriteLine(answer);
 
-        CreateVideo(RemoveDuplicateFrames(allFrames), "frames1", "video2");
+        if (false)
+            CreateVideo(RemoveDuplicateFrames(allFrames), "frames1", "video2");
     }
 }
 
@@ -277,7 +278,8 @@ internal class Day15Part2 : IPart2Challenge
 
         allFrames.Add(map);
         // 1.16 gb frames, 7mb video
-        CreateVideo(RemoveDuplicateFrames(allFrames));
+        if (false)
+            CreateVideo(RemoveDuplicateFrames(allFrames));
     }
 }
 

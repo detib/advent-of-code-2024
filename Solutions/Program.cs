@@ -52,4 +52,5 @@ foreach (var challenge in challenges.Where(challenge => challenge.IsActive))
                        $"{(elapsedTime.Milliseconds > 0 ? $"{elapsedTime.Milliseconds}ms" : "")}";
 
     Console.WriteLine($"Finished challenge: {challenge.Name} ({challengeType}) in {friendlyTime.Trim()}");
+    Console.WriteLine($"\n{string.Concat(Enumerable.Repeat('-', 100))}");
 }

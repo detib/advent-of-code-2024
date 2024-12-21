@@ -20,7 +20,6 @@ internal class Day3Part1 : IPart1Challenge
 
             foreach (Match result in results)
             {
-                Console.WriteLine($"{result.Groups[0]} : {result.Groups[1]}, {result.Groups[2]}");
                 total += int.Parse(result.Groups[1].Value) * int.Parse(result.Groups[2].Value);
             }
         }
@@ -52,7 +51,6 @@ internal class Day3Part2 : IPart2Challenge
             var betweenDoAndDont = Regex.Matches(result.Groups[1].Value, @"mul\((\d+),(\d+)\)");
             foreach (Match match in betweenDoAndDont)
             {
-                Console.WriteLine($"{match.Groups[0]} : {match.Groups[1]}, {match.Groups[2]}");
                 total += int.Parse(match.Groups[1].Value) * int.Parse(match.Groups[2].Value);
             }
         }

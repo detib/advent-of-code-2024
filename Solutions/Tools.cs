@@ -40,7 +40,7 @@ public static class Tools
         if (length == 1) return list.Select(t => new[] { t });
 
         return GetPermutations(list, length - 1)
-            .SelectMany(t => list, (t1, t2) => t1.Concat([t2]));
+            .SelectMany(_ => list, (t1, t2) => t1.Concat([t2]));
     }
 
     public static readonly Dictionary<Direction, (int i, int j)> Sides = new()
@@ -55,8 +55,8 @@ public static class Tools
     {
         { Direction.Tr, (-1, 1) },
         { Direction.Tl, (-1, -1) },
-        { Direction.Br, (1, -1) },
-        { Direction.Bl, (1, 1) },
+        { Direction.Br, (1, 1) },
+        { Direction.Bl, (1, -1) }
     };
 
     public static readonly Dictionary<Direction, (int i, int j)> SidesAndDiagonals = new()
@@ -67,7 +67,7 @@ public static class Tools
         { Direction.U, (-1, 0) },
         { Direction.Tr, (-1, 1) },
         { Direction.Tl, (-1, -1) },
-        { Direction.Br, (1, -1) },
-        { Direction.Bl, (1, 1) },
+        { Direction.Br, (1, 1) },
+        { Direction.Bl, (1, -1) }
     };
 }

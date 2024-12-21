@@ -13,13 +13,8 @@ internal class Day6Part1 : IPart1Challenge
 
     public async Task ExecuteAsync()
     {
-        var map = await File.ReadAllLinesAsync("./Day06/input.txt");
-        const char UP = '^';
-        const char RI = '>';
-        const char DO = 'v';
-        const char LE = '<';
+        var map = await ReadCharMap("./Day06/input.txt");
 
-        var direction = string.Empty;
         var visited = new List<(int, int)>();
         var (guard, i, j) = GetGuardPosition(map);
 
@@ -27,7 +22,7 @@ internal class Day6Part1 : IPart1Challenge
         visited.Add((i, j));
         while (guardNotOut)
         {
-            if (guard is UP)
+            if (guard is Up)
             {
                 while (i-- > 0)
                 {
@@ -44,13 +39,13 @@ internal class Day6Part1 : IPart1Challenge
                     else if (map[i][j] == '#')
                     {
                         i++; // return to previous position
-                        guard = RI;
+                        guard = Ri;
                         break;
                     }
                 }
             }
 
-            if (guard is RI)
+            if (guard is Ri)
             {
                 while (j++ < map[i].Length)
                 {
@@ -67,14 +62,14 @@ internal class Day6Part1 : IPart1Challenge
                     else if (map[i][j] == '#')
                     {
                         j--;
-                        guard = DO;
+                        guard = Do;
                         break;
                     }
 
                 }
             }
 
-            if (guard is DO)
+            if (guard is Do)
             {
                 while (i++ < map.Length)
                 {
@@ -91,14 +86,14 @@ internal class Day6Part1 : IPart1Challenge
                     else if (map[i][j] == '#')
                     {
                         i--;
-                        guard = LE;
+                        guard = Le;
                         break;
                     }
 
                 }
             }
 
-            if (guard is LE)
+            if (guard is Le)
             {
                 while (j-- > 0)
                 {
@@ -115,7 +110,7 @@ internal class Day6Part1 : IPart1Challenge
                     else if (map[i][j] == '#')
                     {
                         j++;
-                        guard = UP;
+                        guard = Up;
                         break;
                     }
 
@@ -134,14 +129,9 @@ internal class Day6Part2 : IPart2Challenge
     public bool IsActive => false;
     public string Part2Result => "1784";
 
-    private const char Up = '^';
-    private const char Ri = '>';
-    private const char Do = 'v';
-    private const char Le = '<';
-
     public async Task ExecuteAsync()
     {
-        var map = await File.ReadAllLinesAsync("./Day06/input.txt");
+        var map = await ReadCharMap("./Day06/input.txt");
         var visited = new List<(char, int, int)>();
         var (guard, i, j) = GetGuardPosition(map);
 
@@ -154,8 +144,6 @@ internal class Day6Part2 : IPart2Challenge
         visited.Add((guard, i, j));
         while (guardNotOut)
         {
-            Console.Clear();
-            Console.WriteLine($"Visited Count: {visited.Count}");
             if (guard is Up)
             {
                 while (i-- > 0)
@@ -257,50 +245,33 @@ internal class Day6Part2 : IPart2Challenge
             }
         };
 
-        var v = visited.Select(z => (z.Item2, z.Item3)).Distinct();
-        var vc = v.Count();
         var loops = new ConcurrentBag<(int x, int y)>();
-        ushort aa = 0;
 
-        GCSettings.LatencyMode = GCLatencyMode.LowLatency;
-
-        if (GC.TryStartNoGCRegion(1024 * 1024 * 1000))
+        Parallel.ForEach(visited.Select(z => (z.Item2, z.Item3)).Distinct(), (coords, _, _) =>
         {
-            Parallel.ForEach(visited.Select(z => (z.Item2, z.Item3)).Distinct(), (coords, _, _) =>
+            var (x, y) = coords;
+            var mapCopyWithNewObstruction = map.Select(x => x.ToArray()).ToArray();
+
+            mapCopyWithNewObstruction[x][y] = '#';
+
+            var isLoop = FindLoopInPossibleGuardPath(
+                mapCopyWithNewObstruction,
+                initialGuardDirection,
+                initialX,
+                initialY,
+                []
+            );
+
+            if (isLoop)
             {
-                var (x, y) = coords;
-                var mapCopyWithNewObstruction = (string[])map.Clone();
-
-                // Modify only the specific row
-                var rowWithNewObstruction = mapCopyWithNewObstruction[x].ToCharArray();
-                rowWithNewObstruction[y] = '#';
-                mapCopyWithNewObstruction[x] = new string(rowWithNewObstruction);
-
-                var isLoop = FindLoopInPossibleGuardPath(
-                    mapCopyWithNewObstruction,
-                    initialGuardDirection,
-                    initialX,
-                    initialY,
-                    []
-                );
-
-                if (isLoop)
-                {
-                    loops.Add((x, y));
-                }
-
-                aa++;
-                Console.Clear();
-                Console.WriteLine($"Tried loops {aa} / {vc}");
-            });
-
-            GC.Collect();
-        }
+                loops.Add((x, y));
+            }
+        });
 
         Console.WriteLine(loops.Count); // 1784
     }
 
-    private static bool FindLoopInPossibleGuardPath(string[] map, char guard, int i, int j,
+    private static bool FindLoopInPossibleGuardPath(char[][] map, char guard, int i, int j,
         List<(char, int, int)> previouslyVisitedSpots)
     {
         var guardNotOut = true;
@@ -428,7 +399,12 @@ internal class Day6Part2 : IPart2Challenge
 
 internal static class Helper
 {
-    internal static (char guard, int i, int j) GetGuardPosition(string[] map)
+    public const char Up = '^';
+    public const char Ri = '>';
+    public const char Do = 'v';
+    public const char Le = '<';
+
+    internal static (char guard, int i, int j) GetGuardPosition(char[][] map)
     {
         for (var i = 0; i < map.Length; i++)
         {

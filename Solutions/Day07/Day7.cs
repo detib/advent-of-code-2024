@@ -127,7 +127,7 @@ internal class Day7Part2 : IPart2Challenge
         Console.WriteLine(finalValue); // 438027111276610
     }
 
-    private static bool CheckIfLineIsPossible(Line possibleLine, List<string> operations, int deep = 0)
+    private static bool CheckIfLineIsPossible(Line possibleLine, List<string> operations)
     {
         var total = CalculateLine(possibleLine, operations);
 
