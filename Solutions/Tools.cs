@@ -34,7 +34,7 @@ public static class Tools
 
     public static async Task<char[][]> ReadCharMap(string filePath) => (await File.ReadAllLinesAsync(filePath)).Select(x => x.ToCharArray()).ToArray();
 
-    internal static IEnumerable<IEnumerable<T>>
+    public static IEnumerable<IEnumerable<T>>
         GetPermutations<T>(List<T> list, int length)
     {
         if (length == 1) return list.Select(t => new[] { t });
@@ -42,6 +42,13 @@ public static class Tools
         return GetPermutations(list, length - 1)
             .SelectMany(_ => list, (t1, t2) => t1.Concat([t2]));
     }
+
+    public static IEnumerable<List<string>> CartesianProduct(List<List<string>> lists)
+    {
+        IEnumerable<List<string>> product = new List<List<string>> { new() };
+        return lists.Aggregate(product, (current, list) => current.SelectMany(acc => list.Select(item => acc.Concat(new List<string> { item }).ToList())));
+    }
+
 
     public static readonly Dictionary<Direction, (int i, int j)> Sides = new()
     {
