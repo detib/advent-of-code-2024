@@ -43,6 +43,26 @@ public static class Tools
             .SelectMany(_ => list, (t1, t2) => t1.Concat([t2]));
     }
 
+    public static IEnumerable<IEnumerable<T>> GetCombinations<T>(List<T> list, int length)
+    {
+        if (length == 0)
+            return [Array.Empty<T>()];
+
+        if (list.Count == 0)
+            return [];
+
+        var head = list[0];
+        var tail = list.Skip(1).ToList();
+
+        // Include the head in combinations of the required length
+        var withHead = GetCombinations(tail, length - 1).Select(c => new[] { head }.Concat(c));
+
+        // Exclude the head and get combinations of the required length from the tail
+        var withoutHead = GetCombinations(tail, length);
+
+        return withHead.Concat(withoutHead);
+    }
+
     public static IEnumerable<List<string>> CartesianProduct(List<List<string>> lists)
     {
         IEnumerable<List<string>> product = new List<List<string>> { new() };
