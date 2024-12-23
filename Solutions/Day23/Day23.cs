@@ -59,7 +59,6 @@ internal class Day23Part1 : IPart1Challenge
     }
 }
 
-
 internal class Day23Part2 : IPart2Challenge
 {
     public DateTime Day => new(2024, 12, 23);
