@@ -1,11 +1,12 @@
 ﻿namespace Solutions.Day25;
 
-internal class Day25 : IPart1Challenge
+internal class Day25 : IPart1Challenge, IPart2Challenge
 {
     public DateTime Day => new(2024, 12, 25);
     public string Name => "Code Chronicle";
     public bool IsActive => false;
     public string Part1Result => "2770";
+    public string Part2Result => "\u2B50";
 
     public async Task ExecuteAsync()
     {

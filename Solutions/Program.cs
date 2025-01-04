@@ -4,6 +4,8 @@ global using static Solutions.Tools;
 using System.Diagnostics;
 using System.Reflection;
 
+Console.OutputEncoding = System.Text.Encoding.UTF8;
+
 var assembly = Assembly.GetExecutingAssembly();
 
 List<IChallenge> challenges = assembly.GetTypes()
@@ -21,10 +23,10 @@ if (challenges.All(x => !x.IsActive))
         var part1Challenge = group.OfType<IPart1Challenge>().FirstOrDefault();
         var part2Challenge = group.OfType<IPart2Challenge>().FirstOrDefault();
 
-        var result = $"Part 1: {(part1Challenge?.Part1Result ?? "???").PadRight(maxPart1Length)} Part 2: {(part2Challenge?.Part2Result ?? "???").PadRight(maxPart2Length)}";
+        var part1And2Results = $"Part 1: {(part1Challenge?.Part1Result ?? "???").PadRight(maxPart1Length)} Part 2: {(part2Challenge?.Part2Result ?? "???").PadRight(maxPart2Length)}";
 
         Console.WriteLine($"{part1Challenge?.Day.Day.ToString() ?? part2Challenge?.Day.Day.ToString() ?? "???",2} - " +
-                          $"{(part1Challenge?.Name ?? part2Challenge?.Name ?? "???").PadRight(maxNameLength)} : {result}");
+                          $"{(part1Challenge?.Name ?? part2Challenge?.Name ?? "???").PadRight(maxNameLength)} {part1And2Results}");
     }
 }
 
